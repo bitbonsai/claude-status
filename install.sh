@@ -50,10 +50,8 @@ else
 fi
 echo ""
 echo "AFTER:"
-echo "  {"
-echo "    \"type\": \"command\","
-echo "    \"command\": \"bun $INSTALL_DIR/statusline.ts\""
-echo "  }"
+STATUSLINE_CMD="bun $INSTALL_DIR/statusline.ts"
+jq -n --arg cmd "$STATUSLINE_CMD" '{"type": "command", "command": $cmd}'
 echo "────────────────────────────────────────────────────────────────"
 echo ""
 
