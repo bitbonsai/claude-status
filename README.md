@@ -94,5 +94,6 @@ cp ~/.claude/settings.json.backup ~/.claude/settings.json
 - Yellow: 60-79% usage
 - Red: ≥ 80% usage
 
+---
 
 Made with ❤️ for fun
