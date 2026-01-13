@@ -1,3 +1,5 @@
+<img width="629" height="114" alt="image" src="https://github.com/user-attachments/assets/30bac4dc-0bf5-42bf-a205-ef47aff48e58" />
+
 # Claude Statusline
 
 A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
