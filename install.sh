@@ -34,16 +34,6 @@ fi
 echo "✓ Prerequisites check passed"
 echo ""
 
-# Show current statusLine config if exists
-echo "📄 Current Claude settings:"
-if jq -e '.statusLine' "$CLAUDE_SETTINGS" &> /dev/null; then
-  echo "   Existing statusLine configuration:"
-  jq '.statusLine' "$CLAUDE_SETTINGS"
-else
-  echo "   No statusLine configuration found."
-fi
-echo ""
-
 # Show what will be done
 echo "📋 This will:"
 echo "   1. Download/update claude-statusline to $INSTALL_DIR"
@@ -51,11 +41,20 @@ echo "   2. Install dependencies with bun"
 echo "   3. Backup current settings to $BACKUP_FILE"
 echo "   4. Add/update statusLine configuration in $CLAUDE_SETTINGS"
 echo ""
-echo "   New statusLine config:"
-echo "   {"
-echo "     \"type\": \"command\","
-echo "     \"command\": \"bun $INSTALL_DIR/statusline.ts\""
-echo "   }"
+echo "────────────────────────────────────────────────────────────────"
+echo "BEFORE:"
+if jq -e '.statusLine' "$CLAUDE_SETTINGS" &> /dev/null; then
+  jq '.statusLine' "$CLAUDE_SETTINGS"
+else
+  echo "  (no statusLine configured)"
+fi
+echo ""
+echo "AFTER:"
+echo "  {"
+echo "    \"type\": \"command\","
+echo "    \"command\": \"bun $INSTALL_DIR/statusline.ts\""
+echo "  }"
+echo "────────────────────────────────────────────────────────────────"
 echo ""
 
 # Prompt for confirmation
