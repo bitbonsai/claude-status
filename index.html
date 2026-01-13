@@ -754,7 +754,7 @@
                     <details>
                         <summary>How do I customize the colors and appearance?</summary>
                         <div class="faq-content">
-                            <p><strong>Easy way:</strong> Use the statusline-setup agent in Claude Code to configure your statusline interactively.</p>
+                            <p><strong>Easy way:</strong> Use the <code>statusline-setup</code> agent in Claude Code to configure your statusline interactively.</p>
                             <p><strong>Bun version:</strong> Edit <code>~/.claude/claude-statusline/statusline.ts</code> and modify the chalk color calls.</p>
                             <p><strong>Shell version:</strong> Modify ANSI escape codes in the command. <code>\033[34m</code> = blue, <code>\033[32m</code> = green, <code>\033[31m</code> = red.</p>
                         </div>
@@ -770,7 +770,7 @@
                     <details>
                         <summary>Can I add custom information to the statusline?</summary>
                         <div class="faq-content">
-                            <p><strong>Easy way:</strong> Use the statusline-setup agent in Claude Code to add custom fields interactively.</p>
+                            <p><strong>Easy way:</strong> Use the <code>statusline-setup</code> agent in Claude Code to add custom fields interactively.</p>
                             <p><strong>Bun version:</strong> Edit <code>statusline.ts</code> and add your logic. The stdin provides JSON with <code>workspace.current_dir</code>, <code>context_window.current_usage</code>, etc.</p>
                             <p><strong>Shell version:</strong> Add custom shell logic to the command pipeline. Example: <code>[ -n "$AWS_PROFILE" ] && output="${output} aws:$AWS_PROFILE"</code></p>
                         </div>
