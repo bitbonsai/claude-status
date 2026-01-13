@@ -1,7 +1,7 @@
 <div align="center">
   <img width="256" height="256" alt="image" src="https://github.com/user-attachments/assets/2328081a-8e2f-4e36-9df3-5eb36bd53245" />
   <br>
-  <img width="629" height="114" alt="image" src="https://github.com/user-attachments/assets/30bac4dc-0bf5-42bf-a205-ef47aff48e58" />
+  <img width="665" height="125" alt="image" src="https://github.com/user-attachments/assets/2c2acaa2-0bfc-45c1-993f-be9a5c44134c" />
 </div>
 
 # Claude Statusline
