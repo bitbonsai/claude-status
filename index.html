@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Statusline - Enhanced status display for Claude Code</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='8' y='39' width='44' height='13' rx='1.66667' fill='%234B5E58'/%3E%3Cpath d='M8 40.6667C8 39.7462 8.74619 39 9.66667 39H18V52H9.66667C8.74619 52 8 51.2538 8 50.3333V40.6667Z' fill='%2393E59A'/%3E%3Cpath d='M30 14.2473C28.1745 14.2473 26.6809 12.8416 26.6809 11.1236C26.6809 9.40564 28.1745 8 30 8C31.8255 8 33.3191 9.40564 33.3191 11.1236C33.3191 12.8416 31.8255 14.2473 30 14.2473ZM20.3191 32C18.4936 32 17 30.5944 17 28.8764C17 27.1584 18.4936 25.7527 20.3191 25.7527C22.1447 25.7527 23.6383 27.1584 23.6383 28.8764C23.6383 30.5944 22.1447 32 20.3191 32ZM39.6809 32C37.8553 32 36.3617 30.5944 36.3617 28.8764C36.3617 27.1584 37.8553 25.7527 39.6809 25.7527C41.5064 25.7527 43 27.1584 43 28.8764C43 30.5944 41.5064 32 39.6809 32Z' fill='%237DB6FF'/%3E%3C/svg%3E">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .feature {
+            padding: 15px;
+            background: #f7f7f7;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature strong {
+            color: #764ba2;
+        }
+
+        .install-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .install-box pre {
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: #48bb78;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 25px;
+            padding-left: 50px;
+            position: relative;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .alternative {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .alternative h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .indicator {
+            background: #f7f7f7;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        footer {
+            background: #f7f7f7;
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .version {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <svg class="logo" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="39" width="44" height="13" rx="1.66667" fill="#4B5E58"/>
+                <path d="M8 40.6667C8 39.7462 8.74619 39 9.66667 39H18V52H9.66667C8.74619 52 8 51.2538 8 50.3333V40.6667Z" fill="#93E59A"/>
+                <path d="M30 14.2473C28.1745 14.2473 26.6809 12.8416 26.6809 11.1236C26.6809 9.40564 28.1745 8 30 8C31.8255 8 33.3191 9.40564 33.3191 11.1236C33.3191 12.8416 31.8255 14.2473 30 14.2473ZM20.3191 32C18.4936 32 17 30.5944 17 28.8764C17 27.1584 18.4936 25.7527 20.3191 25.7527C22.1447 25.7527 23.6383 27.1584 23.6383 28.8764C23.6383 30.5944 22.1447 32 20.3191 32ZM39.6809 32C37.8553 32 36.3617 30.5944 36.3617 28.8764C36.3617 27.1584 37.8553 25.7527 39.6809 25.7527C41.5064 25.7527 43 27.1584 43 28.8764C43 30.5944 41.5064 32 39.6809 32Z" fill="#7DB6FF"/>
+            </svg>
+            <h1>Claude Statusline</h1>
+            <p>A clean, fast statusline for Claude Code</p>
+        </header>
+
+        <div class="content">
+            <div class="section">
+                <h2>What is Claude Statusline?</h2>
+                <p>Claude Statusline provides a rich, informative status display for Claude Code, showing your current context at a glance. It displays your username, working directory, git branch and status, virtual environment, and context window usage—all with beautiful color-coded indicators.</p>
+            </div>
+
+            <div class="section">
+                <h2>Features</h2>
+                <div class="features">
+                    <div class="feature"><strong>User & Directory</strong> - Shows username and current working directory</div>
+                    <div class="feature"><strong>Git Integration</strong> - Branch name and comprehensive status indicators</div>
+                    <div class="feature"><strong>Virtual Environments</strong> - Displays active Python virtual environment</div>
+                    <div class="feature"><strong>Context Usage</strong> - Visual bar showing Claude's context window usage with color coding</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Easy Installation</h2>
+                <p>One command to download, install dependencies, and configure Claude Code:</p>
+
+                <div class="install-box">
+                    <button class="copy-btn" onclick="copyToClipboard(this, 'easy-install')">Copy</button>
+                    <pre id="easy-install">curl -fsSL https://raw.githubusercontent.com/bitbonsai/claude-status/main/install.sh -o install.sh && bash install.sh</pre>
+                </div>
+
+                <ul class="steps">
+                    <li>The installer downloads to <code>~/.claude/claude-statusline</code></li>
+                    <li>It installs dependencies using Bun and updates your Claude settings</li>
+                    <li>Your settings are automatically backed up before any changes</li>
+                </ul>
+
+                <p><strong>Prerequisites:</strong> <a href="https://bun.sh" target="_blank">Bun</a> and <a href="https://jqlang.github.io/jq/" target="_blank">jq</a></p>
+            </div>
+
+            <div class="alternative">
+                <h3>⚡ Hardcore Alternative</h3>
+                <p>For those who prefer a zero-dependency solution, you can skip Bun/TypeScript entirely and use this pure shell implementation. Just paste this into your <code>~/.claude/settings.json</code>:</p>
+
+                <div class="install-box" style="margin-top: 15px;">
+                    <button class="copy-btn" onclick="copyToClipboard(this, 'hardcore-config')">Copy</button>
+                    <pre id="hardcore-config">{
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); cwd=$(echo \"$input\" | jq -r '.workspace.current_dir'); cd \"$cwd\" 2>/dev/null || exit 0; output=\"$(whoami)\"; dir=\"${cwd/#$HOME/~}\"; output=\"${output} $(printf '\\033[34m%s\\033[0m' \"$dir\")\"; if git rev-parse --git-dir > /dev/null 2>&1; then branch=$(git branch --show-current 2>/dev/null || git rev-parse --short HEAD 2>/dev/null); [ -n \"$branch\" ] && output=\"${output} $(printf '\\033[90m%s\\033[0m' \"$branch\")\"; if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null || [ -n \"$(git ls-files --others --exclude-standard 2>/dev/null)\" ]; then git_status=\"\"; git ls-files -u 2>/dev/null | grep -q . && git_status=\"${git_status}!\"; [ -n \"$(git ls-files --others --exclude-standard 2>/dev/null)\" ] && git_status=\"${git_status}?\"; ! git diff --quiet 2>/dev/null && git_status=\"${git_status}*\"; ! git diff --cached --quiet 2>/dev/null && git_status=\"${git_status}+\"; upstream=$(git rev-parse --abbrev-ref @{upstream} 2>/dev/null); if [ -n \"$upstream\" ]; then ahead=$(git rev-list --count @{upstream}..HEAD 2>/dev/null || echo 0); behind=$(git rev-list --count HEAD..@{upstream} 2>/dev/null || echo 0); [ \"$ahead\" -gt 0 ] && git_status=\"${git_status}↑${ahead}\"; [ \"$behind\" -gt 0 ] && git_status=\"${git_status}↓${behind}\"; fi; [ -n \"$git_status\" ] && output=\"${output} $(printf '\\033[36m[%s]\\033[0m' \"$git_status\")\"; fi; fi; [ -n \"$VIRTUAL_ENV\" ] && output=\"${output} $(printf '\\033[90m%s\\033[0m' \"$(basename \"$VIRTUAL_ENV\")\")\"; usage=$(echo \"$input\" | jq '.context_window.current_usage'); if [ \"$usage\" != \"null\" ]; then current=$(echo \"$usage\" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens'); size=$(echo \"$input\" | jq '.context_window.context_window_size'); pct=$((current * 100 / size)); filled=$((pct / 10)); bar=\"\"; i=0; while [ $i -lt 10 ]; do if [ $i -lt $filled ]; then bar=\"${bar}█\"; else bar=\"${bar}░\"; fi; i=$((i + 1)); done; if [ $pct -ge 80 ]; then barcolor=\"\\033[31m\"; elif [ $pct -ge 60 ]; then barcolor=\"\\033[33m\"; else barcolor=\"\\033[32m\"; fi; output=\"${output} $(printf '\\033[90m∴\\033[0m') $(printf '\\033[38;2;76;97;90mcontext:\\033[0m') ${barcolor}${bar}$(printf '\\033[0m')\"; fi; echo \"$output\""
+  }
+}</pre>
+                </div>
+
+                <p style="margin-top: 15px;"><strong>Only requires:</strong> jq (standard on newer macOS, or <code>brew install jq</code>)</p>
+            </div>
+
+            <div class="section">
+                <h2>Git Status Indicators</h2>
+                <div class="indicators">
+                    <div class="indicator">! = Conflicts</div>
+                    <div class="indicator">? = Untracked</div>
+                    <div class="indicator">* = Modified</div>
+                    <div class="indicator">+ = Staged</div>
+                    <div class="indicator">↑n = Ahead</div>
+                    <div class="indicator">↓n = Behind</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Context Bar Colors</h2>
+                <div class="indicators">
+                    <div class="indicator" style="border-left: 4px solid #48bb78;">Green: &lt; 60%</div>
+                    <div class="indicator" style="border-left: 4px solid #ecc94b;">Yellow: 60-79%</div>
+                    <div class="indicator" style="border-left: 4px solid #f56565;">Red: ≥ 80%</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>FAQ for Developers</h2>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">How do I customize the colors and appearance?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p><strong>Bun version:</strong> Edit <code>~/.claude/claude-statusline/statusline.ts</code> and modify the chalk color calls. For example, change <code>chalk.blue(dir)</code> to <code>chalk.green(dir)</code>.</p>
+                        <p style="margin-top: 10px;"><strong>Shell version:</strong> Modify the ANSI escape codes in the command string. <code>\033[34m</code> is blue, <code>\033[32m</code> is green, <code>\033[31m</code> is red, etc. RGB colors use <code>\033[38;2;R;G;Bm</code> format.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">What's the performance impact?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p>Minimal. The statusline command runs once per prompt update (typically when you send a message). The Bun version with simple-git is highly optimized. The shell version uses native git commands. Both typically execute in under 50ms even in large repositories.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">Can I add custom information to the statusline?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p><strong>Bun version:</strong> Edit <code>statusline.ts</code> and add your custom logic. The stdin provides JSON with <code>workspace.current_dir</code>, <code>context_window.current_usage</code>, and more. Parse this and add your output to the parts array.</p>
+                        <p style="margin-top: 10px;"><strong>Shell version:</strong> The command receives JSON via stdin (stored in <code>$input</code>). Add your custom shell logic anywhere in the pipeline and append to <code>$output</code>. For example, add AWS profile: <code>[ -n "$AWS_PROFILE" ] && output="${output} aws:$AWS_PROFILE"</code></p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">How do I debug when something goes wrong?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p><strong>Bun version:</strong> Run <code>echo '{"workspace":{"current_dir":"'$(pwd)'"}}' | bun ~/.claude/claude-statusline/statusline.ts</code> to test manually.</p>
+                        <p style="margin-top: 10px;"><strong>Shell version:</strong> Extract the command from settings.json and test it: <code>echo '{"workspace":{"current_dir":"'$(pwd)'"}}' | bash -c 'YOUR_COMMAND_HERE'</code></p>
+                        <p style="margin-top: 10px;">Check Claude Code logs for errors: <code>~/.claude/logs/</code></p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">Does this work with zsh, fish, or other shells?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p>Yes. The statusline is executed by Claude Code itself, not your interactive shell. The shell version uses POSIX-compliant sh/bash syntax, which works on macOS and Linux regardless of your default shell. The Bun version is shell-agnostic.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">Can I use this in remote/SSH sessions?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p>The statusline runs locally where Claude Code is running. If you're using Claude Code with SSH remote development, install the statusline on the remote machine and update the remote's <code>~/.claude/settings.json</code>. The Bun version requires Bun on the remote; the shell version only needs jq.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">How do I update to a newer version?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p><strong>Bun version:</strong> <code>cd ~/.claude/claude-statusline && git pull && bun install</code></p>
+                        <p style="margin-top: 10px;"><strong>Shell version:</strong> Just copy the updated JSON configuration from this page into your settings.json.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">What about Windows/WSL support?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p><strong>WSL:</strong> Both versions work perfectly in WSL (Windows Subsystem for Linux).</p>
+                        <p style="margin-top: 10px;"><strong>Native Windows:</strong> The Bun version works on Windows if you have Bun and jq installed. The shell version requires a POSIX-compliant environment (WSL, Git Bash, or Cygwin). Consider using the Bun version for better Windows compatibility.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">Can I hide specific information (e.g., username or context bar)?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p>Yes. Edit the source file and comment out or remove the sections you don't want. In the Bun version, remove lines from the <code>parts</code> array. In the shell version, remove or comment out specific variable assignments and output concatenations.</p>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">Why choose the Bun version vs. the shell version?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p><strong>Bun version:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Easier to read and modify (TypeScript)</li>
+                            <li>Better git performance with simple-git library</li>
+                            <li>Cleaner color handling with chalk</li>
+                            <li>Easier to extend with npm packages</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Shell version:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 5px;">
+                            <li>Zero dependencies except jq</li>
+                            <li>No installation process</li>
+                            <li>Runs anywhere with POSIX shell</li>
+                            <li>Slightly faster cold start</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 15px; cursor: pointer;">
+                    <summary style="font-weight: 600; padding: 10px; background: #f7f7f7; border-radius: 6px;">Can I use this in CI/CD or automated environments?</summary>
+                    <div style="padding: 15px; border-left: 3px solid #667eea; margin-top: 10px;">
+                        <p>While technically possible, the statusline is designed for interactive Claude Code sessions. In CI/CD, Claude Code typically isn't running interactively. If you need similar information in automation, extract the core logic into standalone scripts rather than using the statusline configuration.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <footer>
+            <a href="https://github.com/bitbonsai/claude-status" target="_blank">View on GitHub</a>
+            <span class="version">v1.0.0</span>
+        </footer>
+    </div>
+
+    <script>
+        function copyToClipboard(button, elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
