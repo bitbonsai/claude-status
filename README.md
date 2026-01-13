@@ -6,7 +6,6 @@
 
 # Claude Statusline
 
-[![Website](https://img.shields.io/badge/Website-bitbonsai.github.io-blue.svg)](https://bitbonsai.github.io/claude-status/)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/bitbonsai/claude-status/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/bitbonsai/claude-status?style=social)](https://github.com/bitbonsai/claude-status/stargazers)
@@ -15,6 +14,10 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
+
+## Website
+
+https://bitbonsai.github.io/claude-status/
 
 ## Features
 
