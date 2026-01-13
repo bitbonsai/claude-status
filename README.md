@@ -11,6 +11,8 @@
 
 A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
 
+🌐 **[View Documentation](https://bitbonsai.github.io/claude-status/)**
+
 ## Features
 
 - Username and current directory
