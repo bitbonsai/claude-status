@@ -10,7 +10,7 @@
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/bitbonsai/claude-status/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/bitbonsai/claude-status?style=social)](https://github.com/bitbonsai/claude-status/stargazers)
-[![Tests](https://img.shields.io/badge/tests-bun%20test-orange.svg)](install.test.ts)
+[![Tests](https://github.com/bitbonsai/claude-status/actions/workflows/test.yml/badge.svg)](https://github.com/bitbonsai/claude-status/actions/workflows/test.yml)
 [![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
