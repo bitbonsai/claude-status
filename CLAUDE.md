@@ -14,6 +14,8 @@ The project consists of two main implementations:
 1. **TypeScript/Bun version** (statusline.ts) - Main implementation using simple-git and chalk
 2. **Shell-only version** - Zero-dependency alternative using POSIX shell and jq
 
+**Note:** GitHub Pages (index.html) design documentation is in `CLAUDE-page.md`.
+
 ## Development Commands
 
 ### Testing
