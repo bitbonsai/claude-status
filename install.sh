@@ -48,16 +48,14 @@ if [ "$CURRENT_CMD" = "$STATUSLINE_CMD" ]; then
   jq '.statusLine' "$CLAUDE_SETTINGS"
   echo ""
   if [ -d "$INSTALL_DIR" ]; then
-    read -p "❓ Update code to latest version? (y/n) " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    read -p "❓ Update code to latest version? (Y/n) " -r
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
       echo "Nothing to do. Exiting."
       exit 0
     fi
   else
-    read -p "❓ Download statusline code? (y/n) " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    read -p "❓ Download statusline code? (Y/n) " -r
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
       echo "Installation cancelled."
       exit 0
     fi
@@ -85,9 +83,8 @@ else
   echo ""
 
   # Prompt for confirmation
-  read -p "❓ Continue? (y/n) " -n 1 -r
-  echo ""
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  read -p "❓ Continue? (Y/n) " -r
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
     echo "Installation cancelled."
     exit 0
   fi
@@ -101,15 +98,14 @@ echo "🚀 Installing..."
 if [ -d "$INSTALL_DIR" ]; then
   if [ "$SKIP_SETTINGS_UPDATE" = false ]; then
     echo "📦 Existing installation found at $INSTALL_DIR"
-    read -p "❓ Update existing installation? (y/n) " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
+    read -p "❓ Update existing installation? (Y/n) " -r
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+      echo "Skipping download/update."
+      cd "$INSTALL_DIR"
+    else
       echo "📦 Updating..."
       cd "$INSTALL_DIR"
       git pull --quiet
-    else
-      echo "Skipping download/update."
-      cd "$INSTALL_DIR"
     fi
   else
     # Already asked about update earlier
