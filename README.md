@@ -60,6 +60,27 @@ bun install
 }
 ```
 
+## ⚡ Hardcore Alternative
+
+Skip Bun/TypeScript entirely with this zero-dependency shell implementation. Just paste this into your `~/.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); cwd=$(echo \"$input\" | jq -r '.workspace.current_dir'); cd \"$cwd\" 2>/dev/null || exit 0; output=\"$(whoami)\"; dir=\"${cwd/#$HOME/~}\"; output=\"${output} $(printf '\\033[34m%s\\033[0m' \"$dir\")\"; if git rev-parse --git-dir > /dev/null 2>&1; then branch=$(git branch --show-current 2>/dev/null || git rev-parse --short HEAD 2>/dev/null); [ -n \"$branch\" ] && output=\"${output} $(printf '\\033[90m%s\\033[0m' \"$branch\")\"; if ! git diff --quiet 2>/dev/null || ! git diff --cached --quiet 2>/dev/null || [ -n \"$(git ls-files --others --exclude-standard 2>/dev/null)\" ]; then git_status=\"\"; git ls-files -u 2>/dev/null | grep -q . && git_status=\"${git_status}!\"; [ -n \"$(git ls-files --others --exclude-standard 2>/dev/null)\" ] && git_status=\"${git_status}?\"; ! git diff --quiet 2>/dev/null && git_status=\"${git_status}*\"; ! git diff --cached --quiet 2>/dev/null && git_status=\"${git_status}+\"; upstream=$(git rev-parse --abbrev-ref @{upstream} 2>/dev/null); if [ -n \"$upstream\" ]; then ahead=$(git rev-list --count @{upstream}..HEAD 2>/dev/null || echo 0); behind=$(git rev-list --count HEAD..@{upstream} 2>/dev/null || echo 0); [ \"$ahead\" -gt 0 ] && git_status=\"${git_status}↑${ahead}\"; [ \"$behind\" -gt 0 ] && git_status=\"${git_status}↓${behind}\"; fi; [ -n \"$git_status\" ] && output=\"${output} $(printf '\\033[36m[%s]\\033[0m' \"$git_status\")\"; fi; fi; [ -n \"$VIRTUAL_ENV\" ] && output=\"${output} $(printf '\\033[90m%s\\033[0m' \"$(basename \"$VIRTUAL_ENV\")\")\"; usage=$(echo \"$input\" | jq '.context_window.current_usage'); if [ \"$usage\" != \"null\" ]; then current=$(echo \"$usage\" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens'); size=$(echo \"$input\" | jq '.context_window.context_window_size'); pct=$((current * 100 / size)); filled=$((pct / 10)); bar=\"\"; i=0; while [ $i -lt 10 ]; do if [ $i -lt $filled ]; then bar=\"${bar}█\"; else bar=\"${bar}░\"; fi; i=$((i + 1)); done; if [ $pct -ge 80 ]; then barcolor=\"\\033[31m\"; elif [ $pct -ge 60 ]; then barcolor=\"\\033[33m\"; else barcolor=\"\\033[32m\"; fi; output=\"${output} $(printf '\\033[90m∴\\033[0m') $(printf '\\033[38;2;76;97;90mcontext:\\033[0m') ${barcolor}${bar}$(printf '\\033[0m')\"; fi; echo \"$output\""
+  }
+}
+```
+
+**Only requires:** jq (standard on newer macOS, or `brew install jq`)
+
+### Why choose the Bun version vs. the shell version?
+
+**Bun:** Easier to read/modify (TypeScript), better git performance, cleaner colors with chalk, extensible with npm packages.
+
+**Shell:** Zero dependencies except jq, no installation, runs anywhere with POSIX shell, slightly faster cold start.
+
 ## Uninstall
 
 To completely remove the statusline:
@@ -94,6 +115,54 @@ cp ~/.claude/settings.json.backup ~/.claude/settings.json
 - Yellow: 60-79% usage
 - Red: ≥ 80% usage
 
----
+## FAQ for Developers
 
-Made with ❤️ for fun
+<details>
+<summary>How do I customize the colors and appearance?</summary>
+
+**Easy way:** Use the `statusline-setup` agent in Claude Code to configure your statusline interactively.
+
+**Bun version:** Edit `~/.claude/claude-statusline/statusline.ts` and modify the chalk color calls.
+
+**Shell version:** Modify ANSI escape codes in the command. `\033[34m` = blue, `\033[32m` = green, `\033[31m` = red.
+</details>
+
+<details>
+<summary>What's the performance impact?</summary>
+
+Minimal. The statusline runs once per prompt update. Both versions typically execute in under 50ms even in large repositories.
+</details>
+
+<details>
+<summary>Can I add custom information to the statusline?</summary>
+
+**Easy way:** Use the `statusline-setup` agent in Claude Code to add custom fields interactively.
+
+**Bun version:** Edit `statusline.ts` and add your logic. The stdin provides JSON with `workspace.current_dir`, `context_window.current_usage`, etc.
+
+**Shell version:** Add custom shell logic to the command pipeline. Example: `[ -n "$AWS_PROFILE" ] && output="${output} aws:$AWS_PROFILE"`
+</details>
+
+<details>
+<summary>How do I debug when something goes wrong?</summary>
+
+**Bun version:** Run `echo '{"workspace":{"current_dir":"'$(pwd)'"}}' | bun ~/.claude/claude-statusline/statusline.ts`
+
+**Shell version:** Extract the command and test manually with echo piped to bash.
+
+Check Claude Code logs at `~/.claude/logs/`
+</details>
+
+<details>
+<summary>Does this work with zsh, fish, or other shells?</summary>
+
+Yes. The statusline is executed by Claude Code itself, not your interactive shell. Both versions work regardless of your default shell.
+</details>
+
+<details>
+<summary>Why choose the Bun version vs. the shell version?</summary>
+
+**Bun:** Easier to read/modify (TypeScript), better git performance, cleaner colors with chalk, extensible with npm packages.
+
+**Shell:** Zero dependencies except jq, no installation, runs anywhere with POSIX shell, slightly faster cold start.
+</details>
