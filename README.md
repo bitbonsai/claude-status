@@ -1,4 +1,8 @@
-<img width="629" height="114" alt="image" src="https://github.com/user-attachments/assets/30bac4dc-0bf5-42bf-a205-ef47aff48e58" />
+<div align="center">
+  <img width="256" height="256" alt="image" src="https://github.com/user-attachments/assets/70f77d20-4572-4475-93a6-0dd480128f04" />
+  <br>
+  <img width="629" height="114" alt="image" src="https://github.com/user-attachments/assets/30bac4dc-0bf5-42bf-a205-ef47aff48e58" />
+</div>
 
 # Claude Statusline
 
