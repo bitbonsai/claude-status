@@ -48,13 +48,15 @@ if [ "$CURRENT_CMD" = "$STATUSLINE_CMD" ]; then
   jq '.statusLine' "$CLAUDE_SETTINGS"
   echo ""
   if [ -d "$INSTALL_DIR" ]; then
-    read -p "❓ Update code to latest version? (Y/n) " -r
+    read -p "❓ Update code to latest version? (Y/n) " -n 1 -r
+    echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
       echo "Nothing to do. Exiting."
       exit 0
     fi
   else
-    read -p "❓ Download statusline code? (Y/n) " -r
+    read -p "❓ Download statusline code? (Y/n) " -n 1 -r
+    echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
       echo "Installation cancelled."
       exit 0
@@ -83,7 +85,8 @@ else
   echo ""
 
   # Prompt for confirmation
-  read -p "❓ Continue? (Y/n) " -r
+  read -p "❓ Continue? (Y/n) " -n 1 -r
+  echo ""
   if [[ $REPLY =~ ^[Nn]$ ]]; then
     echo "Installation cancelled."
     exit 0
