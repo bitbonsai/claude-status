@@ -135,6 +135,12 @@ if [ "$SKIP_SETTINGS_UPDATE" = false ]; then
 
   # Update settings.json with jq
   echo "⚙️  Updating settings..."
+
+  # If file is empty or invalid JSON, initialize with empty object
+  if [ ! -s "$CLAUDE_SETTINGS" ] || ! jq empty "$CLAUDE_SETTINGS" &>/dev/null; then
+    echo "{}" > "$CLAUDE_SETTINGS"
+  fi
+
   jq --arg cmd "$STATUSLINE_CMD" '.statusLine = {"type": "command", "command": $cmd}' "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS.tmp"
   mv "$CLAUDE_SETTINGS.tmp" "$CLAUDE_SETTINGS"
 
