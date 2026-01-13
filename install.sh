@@ -34,33 +34,64 @@ fi
 echo "✓ Prerequisites check passed"
 echo ""
 
-# Show what will be done
-echo "📋 This will:"
-echo "   1. Download/update claude-statusline to $INSTALL_DIR"
-echo "   2. Install dependencies with bun"
-echo "   3. Backup current settings to $BACKUP_FILE"
-echo "   4. Add/update statusLine configuration in $CLAUDE_SETTINGS"
-echo ""
-echo "────────────────────────────────────────────────────────────────"
-echo "BEFORE:"
-if jq -e '.statusLine' "$CLAUDE_SETTINGS" &> /dev/null; then
-  jq '.statusLine' "$CLAUDE_SETTINGS"
-else
-  echo "  (no statusLine configured)"
-fi
-echo ""
-echo "AFTER:"
+# Check if config already matches target
 STATUSLINE_CMD="bun $INSTALL_DIR/statusline.ts"
-jq -n --arg cmd "$STATUSLINE_CMD" '{"type": "command", "command": $cmd}'
-echo "────────────────────────────────────────────────────────────────"
-echo ""
+CURRENT_CMD=""
+if jq -e '.statusLine.command' "$CLAUDE_SETTINGS" &> /dev/null; then
+  CURRENT_CMD=$(jq -r '.statusLine.command' "$CLAUDE_SETTINGS")
+fi
 
-# Prompt for confirmation
-read -p "Continue? (y/n) " -n 1 -r
-echo ""
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "Installation cancelled."
-  exit 0
+if [ "$CURRENT_CMD" = "$STATUSLINE_CMD" ]; then
+  echo "✓ Settings already configured correctly!"
+  echo ""
+  echo "📋 Current statusLine config:"
+  jq '.statusLine' "$CLAUDE_SETTINGS"
+  echo ""
+  if [ -d "$INSTALL_DIR" ]; then
+    read -p "❓ Update code to latest version? (y/n) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo "Nothing to do. Exiting."
+      exit 0
+    fi
+  else
+    read -p "❓ Download statusline code? (y/n) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo "Installation cancelled."
+      exit 0
+    fi
+  fi
+  SKIP_SETTINGS_UPDATE=true
+else
+  # Show what will be done
+  echo "📋 This will:"
+  echo "   1. Download/update claude-statusline to $INSTALL_DIR"
+  echo "   2. Install dependencies with bun"
+  echo "   3. Backup current settings to $BACKUP_FILE"
+  echo "   4. Add/update statusLine configuration in $CLAUDE_SETTINGS"
+  echo ""
+  echo "────────────────────────────────────────────────────────────────"
+  echo "BEFORE:"
+  if jq -e '.statusLine' "$CLAUDE_SETTINGS" &> /dev/null; then
+    jq '.statusLine' "$CLAUDE_SETTINGS"
+  else
+    echo "  (no statusLine configured)"
+  fi
+  echo ""
+  echo "AFTER:"
+  jq -n --arg cmd "$STATUSLINE_CMD" '{"type": "command", "command": $cmd}'
+  echo "────────────────────────────────────────────────────────────────"
+  echo ""
+
+  # Prompt for confirmation
+  read -p "❓ Continue? (y/n) " -n 1 -r
+  echo ""
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Installation cancelled."
+    exit 0
+  fi
+  SKIP_SETTINGS_UPDATE=false
 fi
 
 echo ""
@@ -68,16 +99,23 @@ echo "🚀 Installing..."
 
 # Check if already installed
 if [ -d "$INSTALL_DIR" ]; then
-  echo "📦 Existing installation found at $INSTALL_DIR"
-  read -p "Update existing installation? (y/n) " -n 1 -r
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
+  if [ "$SKIP_SETTINGS_UPDATE" = false ]; then
+    echo "📦 Existing installation found at $INSTALL_DIR"
+    read -p "❓ Update existing installation? (y/n) " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      echo "📦 Updating..."
+      cd "$INSTALL_DIR"
+      git pull --quiet
+    else
+      echo "Skipping download/update."
+      cd "$INSTALL_DIR"
+    fi
+  else
+    # Already asked about update earlier
     echo "📦 Updating..."
     cd "$INSTALL_DIR"
     git pull --quiet
-  else
-    echo "Skipping download/update."
-    cd "$INSTALL_DIR"
   fi
 else
   echo "📦 Downloading statusline..."
@@ -89,20 +127,30 @@ fi
 echo "📦 Installing dependencies..."
 bun install --silent
 
-# Backup settings (overwrite previous backup)
-echo "💾 Backing up settings..."
-cp "$CLAUDE_SETTINGS" "$BACKUP_FILE"
+# Update settings only if needed
+if [ "$SKIP_SETTINGS_UPDATE" = false ]; then
+  # Backup settings (overwrite previous backup)
+  echo "💾 Backing up settings..."
+  cp "$CLAUDE_SETTINGS" "$BACKUP_FILE"
 
-# Update settings.json with jq
-echo "⚙️  Updating settings..."
-STATUSLINE_CMD="bun $INSTALL_DIR/statusline.ts"
-jq --arg cmd "$STATUSLINE_CMD" '.statusLine = {"type": "command", "command": $cmd}' "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS.tmp"
-mv "$CLAUDE_SETTINGS.tmp" "$CLAUDE_SETTINGS"
+  # Update settings.json with jq
+  echo "⚙️  Updating settings..."
+  jq --arg cmd "$STATUSLINE_CMD" '.statusLine = {"type": "command", "command": $cmd}' "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS.tmp"
+  mv "$CLAUDE_SETTINGS.tmp" "$CLAUDE_SETTINGS"
 
-echo ""
-echo "✅ Installation complete!"
-echo ""
-echo "   Backup saved to: $BACKUP_FILE"
-echo "   Settings updated: $CLAUDE_SETTINGS"
-echo ""
-echo "   Restart Claude Code to see the new statusline."
+  echo ""
+  echo "✅ Installation complete!"
+  echo ""
+  echo "   Backup saved to: $BACKUP_FILE"
+  echo "   Settings updated: $CLAUDE_SETTINGS"
+  echo ""
+  echo "   Restart Claude Code to see the new statusline."
+else
+  echo ""
+  echo "✅ Update complete!"
+  echo ""
+  echo "   Code updated at: $INSTALL_DIR"
+  echo "   Settings unchanged (already configured correctly)"
+  echo ""
+  echo "   Restart Claude Code to see any updates."
+fi
