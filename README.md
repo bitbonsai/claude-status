@@ -53,6 +53,25 @@ bun install
 }
 ```
 
+## Uninstall
+
+To completely remove the statusline:
+
+1. Remove the statusLine configuration from settings:
+```bash
+jq 'del(.statusLine)' ~/.claude/settings.json > ~/.claude/settings.json.tmp && mv ~/.claude/settings.json.tmp ~/.claude/settings.json
+```
+
+2. Remove the installation directory:
+```bash
+rm -rf ~/.claude/claude-statusline
+```
+
+3. (Optional) Restore from backup if you want your previous settings:
+```bash
+cp ~/.claude/settings.json.backup ~/.claude/settings.json
+```
+
 ## Git Status Indicators
 
 - `!` - Merge conflicts
