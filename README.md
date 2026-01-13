@@ -12,26 +12,46 @@ A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
 - Virtual environment name
 - Context window usage bar with color coding
 
+## Prerequisites
+
+- [Bun](https://bun.sh) - Install with: `curl -fsSL https://bun.sh/install | bash`
+- [jq](https://jqlang.github.io/jq/) - Install with: `brew install jq` (macOS) or `apt-get install jq` (Linux)
+
 ## Installation
 
+Run the automated installer:
+
 ```bash
+curl -fsSL https://raw.githubusercontent.com/bitbonsai/claude-status/main/install.sh | bash
+```
+
+The installer will:
+- Check prerequisites (Bun, jq, Claude settings)
+- Show current statusLine configuration
+- Download to `~/.claude/claude-statusline`
+- Install dependencies
+- Backup your settings (one backup maintained)
+- Update `~/.claude/settings.json`
+- Prompt for confirmation before making changes
+
+### Manual Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/bitbonsai/claude-status.git ~/.claude/claude-statusline
+cd ~/.claude/claude-statusline
 bun install
 ```
 
-## Usage
-
-Add to your Claude Code settings (`~/.claude/settings.json`):
-
+2. Add to your Claude Code settings (`~/.claude/settings.json`):
 ```json
 {
   "statusLine": {
     "type": "command",
-    "command": "bun /Users/YOUR_USERNAME/dev/claude-statusline/statusline.ts"
+    "command": "bun ~/.claude/claude-statusline/statusline.ts"
   }
 }
 ```
-
-Replace `YOUR_USERNAME` with your actual username, or use the full absolute path.
 
 ## Git Status Indicators
 
