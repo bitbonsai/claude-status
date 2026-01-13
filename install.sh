@@ -73,14 +73,10 @@ else
   echo ""
   echo "────────────────────────────────────────────────────────────────"
   echo "BEFORE:"
-  if jq -e '.statusLine' "$CLAUDE_SETTINGS" &> /dev/null; then
-    jq '.statusLine' "$CLAUDE_SETTINGS"
-  else
-    echo "  (no statusLine configured)"
-  fi
+  cat "$CLAUDE_SETTINGS" | jq '.'
   echo ""
   echo "AFTER:"
-  jq -n --arg cmd "$STATUSLINE_CMD" '{"type": "command", "command": $cmd}'
+  jq --arg cmd "$STATUSLINE_CMD" '.statusLine = {"type": "command", "command": $cmd}' "$CLAUDE_SETTINGS"
   echo "────────────────────────────────────────────────────────────────"
   echo ""
 
