@@ -15,7 +15,7 @@ A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
 ## Prerequisites
 
 - [Bun](https://bun.sh) - Install with: `curl -fsSL https://bun.sh/install | bash`
-- [jq](https://jqlang.github.io/jq/) - Install with: `brew install jq` (macOS) or `apt-get install jq` (Linux)
+- [jq](https://jqlang.github.io/jq/) - Standard on newer macOS versions, or install with: `brew install jq` (macOS) or `apt-get install jq` (Linux)
 
 ## Installation
 
