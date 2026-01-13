@@ -69,11 +69,19 @@ fi
 echo ""
 echo "🚀 Installing..."
 
-# Download/update the statusline
+# Check if already installed
 if [ -d "$INSTALL_DIR" ]; then
-  echo "📦 Updating existing installation..."
-  cd "$INSTALL_DIR"
-  git pull --quiet
+  echo "📦 Existing installation found at $INSTALL_DIR"
+  read -p "Update existing installation? (y/n) " -n 1 -r
+  echo ""
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "📦 Updating..."
+    cd "$INSTALL_DIR"
+    git pull --quiet
+  else
+    echo "Skipping download/update."
+    cd "$INSTALL_DIR"
+  fi
 else
   echo "📦 Downloading statusline..."
   git clone --quiet https://github.com/bitbonsai/claude-status.git "$INSTALL_DIR"
