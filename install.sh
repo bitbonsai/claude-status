@@ -149,14 +149,11 @@ if [ "$SKIP_SETTINGS_UPDATE" = false ]; then
   echo ""
   echo "   Backup saved to: $BACKUP_FILE"
   echo "   Settings updated: $CLAUDE_SETTINGS"
-  echo ""
-  echo "   Restart Claude Code to see the new statusline."
+  echo "   The statusline will reload automatically."
 else
   echo ""
   echo "✅ Update complete!"
   echo ""
   echo "   Code updated at: $INSTALL_DIR"
   echo "   Settings unchanged (already configured correctly)"
-  echo ""
-  echo "   Restart Claude Code to see any updates."
 fi
