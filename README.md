@@ -6,6 +6,9 @@
 
 # Claude Statusline
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/bitbonsai/claude-status/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
 
 ## Features
