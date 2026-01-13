@@ -59,7 +59,7 @@ echo "   }"
 echo ""
 
 # Prompt for confirmation
-read -p "Continue? (y/n) " -n 1 -r </dev/tty
+read -p "Continue? (y/n) " -n 1 -r
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   echo "Installation cancelled."
@@ -72,7 +72,7 @@ echo "🚀 Installing..."
 # Check if already installed
 if [ -d "$INSTALL_DIR" ]; then
   echo "📦 Existing installation found at $INSTALL_DIR"
-  read -p "Update existing installation? (y/n) " -n 1 -r </dev/tty
+  read -p "Update existing installation? (y/n) " -n 1 -r
   echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "📦 Updating..."

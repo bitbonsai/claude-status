@@ -19,10 +19,10 @@ A clean, fast statusline for Claude Code using Bun, simple-git, and chalk.
 
 ## Installation
 
-Run the automated installer:
+Download and run the automated installer:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/bitbonsai/claude-status/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/bitbonsai/claude-status/main/install.sh -o install.sh && bash install.sh
 ```
 
 The installer will:
