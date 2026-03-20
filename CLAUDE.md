@@ -73,13 +73,13 @@ The statusline uses `simple-git` which wraps native git commands. Important note
   - Requires `git fetch` to be current (statusline does NOT fetch to avoid network overhead)
   - This is intentional - statusline must be fast (<50ms)
 
-- **Status indicators**:
-  - `!` = merge conflicts (status.conflicted)
-  - `?` = untracked files (status.not_added)
-  - `*` = modified files (status.modified or working_dir === 'M')
-  - `+` = staged changes (status.staged)
-  - `↑n` = commits ahead of remote
-  - `↓n` = commits behind remote
+- **Status indicators** (colored counts with unicode icons):
+  - `n⚠` red = merge conflicts (status.conflicted)
+  - `n✎` yellow = modified files (status.modified or working_dir === 'M')
+  - `n?` gray = untracked files (status.not_added)
+  - `n✓` green = staged changes (status.staged)
+  - `↑n` green = commits ahead of remote
+  - `↓n` red = commits behind remote
 
 ### Context Window Display
 
