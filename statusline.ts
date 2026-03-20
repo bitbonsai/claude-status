@@ -40,20 +40,16 @@ try {
       parts.push(chalk.gray(status.current));
     }
 
-    // Git status indicators
-    const indicators: string[] = [];
-    if (status.conflicted.length > 0) indicators.push('!');
-    if (status.not_added.length > 0) indicators.push('?');
-    if (status.modified.length > 0 || status.files.some(f => f.working_dir === 'M')) indicators.push('*');
-    if (status.staged.length > 0) indicators.push('+');
+    // Git status indicators (colored counts with unicode icons)
+    if (status.conflicted.length > 0) parts.push(chalk.red(`${status.conflicted.length}⚠`));
+    const modCount = status.modified.length || status.files.filter(f => f.working_dir === 'M').length;
+    if (modCount > 0) parts.push(chalk.yellow(`${modCount}✎`));
+    if (status.not_added.length > 0) parts.push(chalk.gray(`${status.not_added.length}?`));
+    if (status.staged.length > 0) parts.push(chalk.green(`${status.staged.length}✓`));
 
     // Ahead/behind
-    if (status.ahead > 0) indicators.push(`↑${status.ahead}`);
-    if (status.behind > 0) indicators.push(`↓${status.behind}`);
-
-    if (indicators.length > 0) {
-      parts.push(chalk.cyan(`[${indicators.join('')}]`));
-    }
+    if (status.ahead > 0) parts.push(chalk.green(`↑${status.ahead}`));
+    if (status.behind > 0) parts.push(chalk.red(`↓${status.behind}`));
   }
 
   // Virtual environment
@@ -74,12 +70,9 @@ try {
     const bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
 
     // Color based on usage
-    let coloredBar: string;
-    if (pct >= 80) coloredBar = chalk.red(bar);
-    else if (pct >= 60) coloredBar = chalk.yellow(bar);
-    else coloredBar = chalk.green(bar);
+    const colorFn = pct >= 80 ? chalk.red : pct >= 60 ? chalk.yellow : chalk.green;
 
-    parts.push(chalk.gray('∴'), chalk.rgb(76, 97, 90)('context:'), coloredBar);
+    parts.push(chalk.gray('∴'), chalk.rgb(76, 97, 90)('context:'), colorFn(bar), colorFn(`${pct}%`));
   }
 
   console.log(parts.join(' '));
